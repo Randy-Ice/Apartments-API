@@ -2,9 +2,14 @@ const Apartment = require("../Models/apartmentModel");
 const chalk = require("chalk");
 
 const getApartments = async (req, res) => {
+  const page = Number(req.query.page);
+  const limit = Number(req.query.limit) || 1;
+  const skip = (page - 1) * limit;
   try {
     const apartments = await Apartment.findAll({
       order: [["createdAt", "desc"]],
+      limit: Number(limit),
+      offset: skip || 0,
     });
     res.status(200).json(apartments);
   } catch (err) {
